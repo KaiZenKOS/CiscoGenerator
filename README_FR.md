@@ -65,6 +65,36 @@ Le projet est structuré en trois fichiers Python principaux :
    - Après avoir saisi tous les détails, cliquez sur "Générer la configuration".
    - La configuration sera enregistrée dans un dossier nommé `ConfigurationsCisco` dans le répertoire Documents.
 
+## Créer un Exécutable avec PyInstaller
+
+Vous pouvez créer un exécutable pour que votre application soit utilisable sans avoir besoin de Python installé sur le système. Voici comment procéder pour macOS et Linux :
+
+1. **Installer PyInstaller** :
+   - Si PyInstaller n'est pas encore installé, vous pouvez l'installer avec la commande suivante :
+     ```sh
+     pip install pyinstaller
+     ```
+
+2. **Créer l'Exécutable** :
+   - Depuis la racine de votre projet, exécutez la commande suivante pour créer un exécutable :
+     ```sh
+     pyinstaller --onefile --windowed main.py
+     ```
+   - Voici une explication des options :
+     - `--onefile` : Crée un fichier exécutable unique.
+     - `--windowed` : Sur macOS, cette option permet de cacher la console lors de l'exécution (utile pour les applications GUI).
+
+3. **Trouver l'Exécutable** :
+   - Après l'exécution de PyInstaller, l'exécutable sera situé dans le dossier `dist/`.
+   - Pour macOS et Linux, vous pourrez trouver un fichier nommé `main` (ou similaire). Vous pouvez déplacer ce fichier vers l'endroit souhaité pour une distribution facile.
+
+4. **Utilisation sur macOS et Linux** :
+   - L'exécutable généré peut être utilisé directement sur les systèmes macOS et Linux compatibles.
+   - Assurez-vous de donner les permissions d'exécution sur l'exécutable si nécessaire :
+     ```sh
+     chmod +x dist/main
+     ```
+
 ## Aperçu du Code
 
 - **Classe `ConfigGenerator`** :

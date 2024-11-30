@@ -65,6 +65,36 @@ The project is structured into three main Python files:
    - After entering all the details, click on "Generate Configuration".
    - The configuration will be saved in a folder named `ConfigurationsCisco` inside the Documents directory.
 
+## Creating an Executable with PyInstaller
+
+You can create an executable to make your application available without needing Python installed on the system. Here is how you can do it for macOS and Linux:
+
+1. **Install PyInstaller**:
+   - If PyInstaller is not yet installed, you can install it with the following command:
+     ```sh
+     pip install pyinstaller
+     ```
+
+2. **Create the Executable**:
+   - From the root of your project, execute the following command to create an executable:
+     ```sh
+     pyinstaller --onefile --windowed main.py
+     ```
+   - Here is an explanation of the options:
+     - `--onefile`: Creates a single executable file.
+     - `--windowed`: For macOS, this option hides the console window when running the GUI application.
+
+3. **Locate the Executable**:
+   - After running PyInstaller, the executable will be located in the `dist/` folder.
+   - For macOS and Linux, you will find a file named `main` (or something similar). You can move this file to your desired location for easy distribution.
+
+4. **Usage on macOS and Linux**:
+   - The generated executable can be used directly on compatible macOS and Linux systems.
+   - Make sure to grant execute permissions to the executable if necessary:
+     ```sh
+     chmod +x dist/main
+     ```
+
 ## Code Overview
 
 - **`ConfigGenerator` Class**:

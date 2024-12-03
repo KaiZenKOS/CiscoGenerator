@@ -10,9 +10,9 @@ class ConfigApp:
 
     def __init__(self):
         """Initialise l'interface utilisateur et les variables."""
-        ctk.set_appearance_mode("System")  # Thème clair, sombre ou système
-        ctk.set_default_color_theme("blue")  # Thème de couleur : blue, green, dark-blue
-
+        ctk.set_appearance_mode("system")  # Thème clair, sombre ou système
+        ctk.set_default_color_theme("green")  # Thème de couleur : blue, green, dark-blue
+        
         self.root = ctk.CTk()
         self.root.title("Générateur de Configuration Cisco")
         self.root.geometry("1000x700")
@@ -31,7 +31,7 @@ class ConfigApp:
     def create_widgets(self):
         """Crée les widgets principaux de l'interface utilisateur."""
         # Création des onglets
-        self.notebook = ctk.CTkTabview(self.root, width=1000, height=700)
+        self.notebook = ctk.CTkTabview(self.root, width=500, height=500)
         self.notebook.pack(expand=True, fill="both")
 
         # Création des onglets
@@ -61,21 +61,21 @@ class ConfigApp:
         """Crée l'onglet pour les informations de l'appareil."""
         frame = self.notebook.tab("Informations Appareil")
 
-        ctk.CTkLabel(frame, text="Nom d'hôte:").grid(row=0, column=0, padx=10, pady=5, sticky="w")
+        ctk.CTkLabel(frame, text="Nom d'hôte:").grid(row=4, column=0, padx=10, pady=5, sticky="w")
         self.hostname_entry = ctk.CTkEntry(frame, placeholder_text="Entrez le nom d'hôte")
-        self.hostname_entry.grid(row=0, column=1, padx=10, pady=5)
+        self.hostname_entry.grid(row=4, column=1, padx=10, pady=5)
 
-        ctk.CTkLabel(frame, text="Bannière:").grid(row=1, column=0, padx=10, pady=5, sticky="w")
+        ctk.CTkLabel(frame, text="Bannière:").grid(row=5, column=0, padx=10, pady=5, sticky="w")
         self.banner_entry = ctk.CTkEntry(frame, placeholder_text="Entrez une bannière")
-        self.banner_entry.grid(row=1, column=1, padx=10, pady=5)
+        self.banner_entry.grid(row=5, column=1, padx=10, pady=5)
 
-        ctk.CTkLabel(frame, text="Enable Secret:").grid(row=2, column=0, padx=10, pady=5, sticky="w")
+        ctk.CTkLabel(frame, text="Enable Secret:").grid(row=6, column=0, padx=10, pady=5, sticky="w")
         self.enable_secret_entry = ctk.CTkEntry(frame, placeholder_text="Entrez le secret", show="*")
-        self.enable_secret_entry.grid(row=2, column=1, padx=10, pady=5)
+        self.enable_secret_entry.grid(row=6, column=1, padx=10, pady=5)
 
-        ctk.CTkLabel(frame, text="Mot de passe des lignes:").grid(row=3, column=0, padx=10, pady=5, sticky="w")
+        ctk.CTkLabel(frame, text="Mot de passe des lignes:").grid(row=7, column=0, padx=10, pady=5, sticky="w")
         self.line_password_entry = ctk.CTkEntry(frame, placeholder_text="Entrez le mot de passe", show="*")
-        self.line_password_entry.grid(row=3, column=1, padx=10, pady=5)
+        self.line_password_entry.grid(row=7, column=1, padx=10, pady=5)
 
     def create_vlans_tab(self):
         """Crée l'onglet pour gérer les VLANs."""

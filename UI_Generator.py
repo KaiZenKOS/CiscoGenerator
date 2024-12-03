@@ -10,12 +10,38 @@ class ConfigApp:
 
     def __init__(self):
         """Initialise l'interface utilisateur et les variables."""
-        ctk.set_appearance_mode("system")  # Thème clair, sombre ou système
-        ctk.set_default_color_theme("green")  # Thème de couleur : blue, green, dark-blue
-        
+        # Récupérer la résolution de l'écran
+        root = ctk.CTk()
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+        root.destroy()  # On détruit cette instance temporaire
+
+        # Définir la résolution de base
+        base_width = 1920
+        base_height = 1080
+
+        # Calculer le facteur d'échelle
+        scale_width = screen_width / base_width
+        scale_height = screen_height / base_height
+        self.scaling_factor = min(scale_width, scale_height)
+
+        # Appliquer le scaling avant la création des widgets
+        ctk.set_widget_scaling(self.scaling_factor)
+        ctk.set_window_scaling(self.scaling_factor)
+
+        # Initialiser la fenêtre principale
         self.root = ctk.CTk()
         self.root.title("Générateur de Configuration Cisco")
-        self.root.geometry("1000x700")
+
+        # Définir la taille de la fenêtre en fonction du scaling
+        window_width = int(1000 * (self.scaling_factor - 0.5))
+        window_height = int(700 * (self.scaling_factor - 0.5))
+        self.root.geometry(f"{window_width}x{window_height}")
+
+        # Appliquer le thème et le mode d'apparence
+        ctk.set_appearance_mode("system")  # Thème clair, sombre ou système
+        ctk.set_default_color_theme("green")  # Thème de couleur : blue, green, dark-blue
+
         self.initialize_variables()
         self.create_widgets()
         self.root.mainloop()
@@ -30,62 +56,73 @@ class ConfigApp:
 
     def create_widgets(self):
         """Crée les widgets principaux de l'interface utilisateur."""
+        # Définir une police par défaut en fonction du facteur d'échelle
+        default_font_size = int(14 * self.scaling_factor)
+        default_font = ctk.CTkFont(size=default_font_size)
+
         # Création des onglets
         self.notebook = ctk.CTkTabview(self.root, width=500, height=500)
         self.notebook.pack(expand=True, fill="both")
 
-        # Création des onglets
+        # Ajout des onglets
         self.notebook.add("Informations Appareil")
         self.notebook.add("VLANs")
         self.notebook.add("Interfaces")
         self.notebook.add("Routage")
         self.notebook.add("ACLs")
 
-        self.create_device_info_tab()
-        self.create_vlans_tab()
-        self.create_interfaces_tab()
-        self.create_routing_tab()
-        self.create_acls_tab()
+        # Ajuster la police des onglets du Tabview
+        for tab_button in self.notebook._segmented_button._buttons_dict.values():
+            tab_button.configure(font=default_font)
+
+        self.create_device_info_tab(default_font)
+        self.create_vlans_tab(default_font)
+        self.create_interfaces_tab(default_font)
+        self.create_routing_tab(default_font)
+        self.create_acls_tab(default_font)
 
         # Boutons de génération et de sortie
         button_frame = ctk.CTkFrame(self.root)
         button_frame.pack(pady=10)
 
-        generate_button = ctk.CTkButton(button_frame, text="Générer la configuration", command=self.generate_configuration)
+        generate_button = ctk.CTkButton(button_frame, text="Générer la configuration", command=self.generate_configuration, font=default_font)
         generate_button.pack(side="left", padx=10)
 
-        quit_button = ctk.CTkButton(button_frame, text="Quitter", command=self.root.quit)
+        quit_button = ctk.CTkButton(button_frame, text="Quitter", command=self.root.quit, font=default_font)
         quit_button.pack(side="left", padx=10)
 
-    def create_device_info_tab(self):
+    def create_device_info_tab(self, font):
         """Crée l'onglet pour les informations de l'appareil."""
         frame = self.notebook.tab("Informations Appareil")
 
-        ctk.CTkLabel(frame, text="Nom d'hôte:").grid(row=4, column=0, padx=10, pady=5, sticky="w")
-        self.hostname_entry = ctk.CTkEntry(frame, placeholder_text="Entrez le nom d'hôte")
-        self.hostname_entry.grid(row=4, column=1, padx=10, pady=5)
+        # Définir la largeur des champs de saisie
+        entry_width = int(200 * self.scaling_factor)
 
-        ctk.CTkLabel(frame, text="Bannière:").grid(row=5, column=0, padx=10, pady=5, sticky="w")
-        self.banner_entry = ctk.CTkEntry(frame, placeholder_text="Entrez une bannière")
-        self.banner_entry.grid(row=5, column=1, padx=10, pady=5)
+        ctk.CTkLabel(frame, text="Nom d'hôte:", font=font).grid(row=0, column=0, padx=10, pady=5, sticky="w")
+        self.hostname_entry = ctk.CTkEntry(frame, placeholder_text="Entrez le nom d'hôte", font=font, width=entry_width)
+        self.hostname_entry.grid(row=0, column=1, padx=10, pady=5)
 
-        ctk.CTkLabel(frame, text="Enable Secret:").grid(row=6, column=0, padx=10, pady=5, sticky="w")
-        self.enable_secret_entry = ctk.CTkEntry(frame, placeholder_text="Entrez le secret", show="*")
-        self.enable_secret_entry.grid(row=6, column=1, padx=10, pady=5)
+        ctk.CTkLabel(frame, text="Bannière:", font=font).grid(row=1, column=0, padx=10, pady=5, sticky="w")
+        self.banner_entry = ctk.CTkEntry(frame, placeholder_text="Entrez une bannière", font=font, width=entry_width)
+        self.banner_entry.grid(row=1, column=1, padx=10, pady=5)
 
-        ctk.CTkLabel(frame, text="Mot de passe des lignes:").grid(row=7, column=0, padx=10, pady=5, sticky="w")
-        self.line_password_entry = ctk.CTkEntry(frame, placeholder_text="Entrez le mot de passe", show="*")
-        self.line_password_entry.grid(row=7, column=1, padx=10, pady=5)
+        ctk.CTkLabel(frame, text="Enable Secret:", font=font).grid(row=2, column=0, padx=10, pady=5, sticky="w")
+        self.enable_secret_entry = ctk.CTkEntry(frame, placeholder_text="Entrez le secret", show="*", font=font, width=entry_width)
+        self.enable_secret_entry.grid(row=2, column=1, padx=10, pady=5)
 
-    def create_vlans_tab(self):
+        ctk.CTkLabel(frame, text="Mot de passe des lignes:", font=font).grid(row=3, column=0, padx=10, pady=5, sticky="w")
+        self.line_password_entry = ctk.CTkEntry(frame, placeholder_text="Entrez le mot de passe", show="*", font=font, width=entry_width)
+        self.line_password_entry.grid(row=3, column=1, padx=10, pady=5)
+
+    def create_vlans_tab(self, font):
         """Crée l'onglet pour gérer les VLANs."""
         frame = self.notebook.tab("VLANs")
-        ctk.CTkLabel(frame, text="Liste des VLANs configurés").pack(pady=10)
+        ctk.CTkLabel(frame, text="Liste des VLANs configurés", font=font).pack(pady=10)
 
-        self.vlan_listbox = ctk.CTkTextbox(frame, width=600, height=300)
+        self.vlan_listbox = ctk.CTkTextbox(frame, width=int(600 * self.scaling_factor), height=int(300 * self.scaling_factor), font=font)
         self.vlan_listbox.pack(pady=5)
 
-        add_vlan_button = ctk.CTkButton(frame, text="Ajouter VLAN", command=self.add_vlan)
+        add_vlan_button = ctk.CTkButton(frame, text="Ajouter VLAN", command=self.add_vlan, font=font)
         add_vlan_button.pack(pady=5)
 
     def add_vlan(self):
@@ -96,15 +133,15 @@ class ConfigApp:
             self.vlan_list.append({"id": vlan_id, "name": vlan_name})
             self.vlan_listbox.insert("end", f"VLAN {vlan_id}: {vlan_name}\n")
 
-    def create_interfaces_tab(self):
+    def create_interfaces_tab(self, font):
         """Crée l'onglet pour gérer les interfaces."""
         frame = self.notebook.tab("Interfaces")
-        ctk.CTkLabel(frame, text="Liste des interfaces configurées").pack(pady=10)
+        ctk.CTkLabel(frame, text="Liste des interfaces configurées", font=font).pack(pady=10)
 
-        self.interface_listbox = ctk.CTkTextbox(frame, width=600, height=300)
+        self.interface_listbox = ctk.CTkTextbox(frame, width=int(600 * self.scaling_factor), height=int(300 * self.scaling_factor), font=font)
         self.interface_listbox.pack(pady=5)
 
-        add_interface_button = ctk.CTkButton(frame, text="Ajouter Interface", command=self.add_interface)
+        add_interface_button = ctk.CTkButton(frame, text="Ajouter Interface", command=self.add_interface, font=font)
         add_interface_button.pack(pady=5)
 
     def add_interface(self):
@@ -129,15 +166,15 @@ class ConfigApp:
         self.interface_list.append(interface)
         self.interface_listbox.insert("end", f"Interface {interface_name}: {description}, Mode: {mode}\n")
 
-    def create_routing_tab(self):
+    def create_routing_tab(self, font):
         """Crée l'onglet pour gérer le routage."""
         frame = self.notebook.tab("Routage")
-        ctk.CTkLabel(frame, text="Configuration des Protocoles de Routage").pack(pady=10)
+        ctk.CTkLabel(frame, text="Configuration des Protocoles de Routage", font=font).pack(pady=10)
 
-        self.routing_listbox = ctk.CTkTextbox(frame, width=600, height=300)
+        self.routing_listbox = ctk.CTkTextbox(frame, width=int(600 * self.scaling_factor), height=int(300 * self.scaling_factor), font=font)
         self.routing_listbox.pack(pady=5)
 
-        add_routing_button = ctk.CTkButton(frame, text="Ajouter Routage", command=self.add_routing)
+        add_routing_button = ctk.CTkButton(frame, text="Ajouter Routage", command=self.add_routing, font=font)
         add_routing_button.pack(pady=5)
 
     def add_routing(self):
@@ -158,15 +195,15 @@ class ConfigApp:
             self.routing_protocols.append({"protocol": protocol, "process_id": process_id, "networks": networks})
             self.routing_listbox.insert("end", f"OSPF: Process ID {process_id}, Réseaux: {len(networks)}\n")
 
-    def create_acls_tab(self):
+    def create_acls_tab(self, font):
         """Crée l'onglet pour gérer les ACLs."""
         frame = self.notebook.tab("ACLs")
-        ctk.CTkLabel(frame, text="Liste des ACLs configurées").pack(pady=10)
+        ctk.CTkLabel(frame, text="Liste des ACLs configurées", font=font).pack(pady=10)
 
-        self.acl_listbox = ctk.CTkTextbox(frame, width=600, height=300)
+        self.acl_listbox = ctk.CTkTextbox(frame, width=int(600 * self.scaling_factor), height=int(300 * self.scaling_factor), font=font)
         self.acl_listbox.pack(pady=5)
 
-        add_acl_button = ctk.CTkButton(frame, text="Ajouter ACL", command=self.add_acl)
+        add_acl_button = ctk.CTkButton(frame, text="Ajouter ACL", command=self.add_acl, font=font)
         add_acl_button.pack(pady=5)
 
     def add_acl(self):
@@ -212,3 +249,5 @@ class ConfigApp:
         messagebox.showinfo("Succès", f"Configuration sauvegardée dans {filename}")
 
 
+if __name__ == "__main__":
+    app = ConfigApp()
